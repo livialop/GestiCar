@@ -9,7 +9,8 @@ WHERE pec_ods_id IN (
     GROUP BY pec_ods_id
     HAVING COUNT(*) > 1
 )
-ORDER BY pec_ods_id;
+ORDER BY pec_ods_id DESC;
+
 
 -- Clientes com maior gasto
 SELECT cli.cli_nome, ods.ods_valor_total 
@@ -91,7 +92,8 @@ WHERE mar.mar_nome = 'corolla';
 SELECT cli.cli_nome, cli.cli_cpf, ods.ods_data_abertura, ods.ods_data_conclusao, ods.ods_observacoes, ods.ods_valor_total 
 FROM tb_ordem_servico ods
 INNER JOIN tb_cliente cli
-	ON cli.cli_id = ods.ods_id;
+	ON cli.cli_id = ods.ods_id
+ORDER BY ods.ods_valor_total DESC;
 
 -- Listar veículos com todos os serviços realizados e mecânicos envolvidos;
 SELECT vei.vei_placa, mec.mec_nome, ods.ods_id
