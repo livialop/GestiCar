@@ -1,7 +1,7 @@
 -- Peça mais utilizada
-select pec.pec_descricao, count(*) as total_usos
+select pec.pec_id, count(*) as total_usos
 from tb_peca pec
-group by pec.pec_descricao
+group by pec.pec_id
 having total_usos > 1
 order by total_usos desc;
 
