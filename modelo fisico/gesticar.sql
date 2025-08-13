@@ -124,6 +124,11 @@ create table tb_ordem_servico (
 	FOREIGN KEY (ods_ser_id) REFERENCES tb_servico(ser_id)
 );
 
+create table tb_estoque (
+	est_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    est_quantidade INT NOT NULL
+);
+
 create table tb_peca (
 	pec_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     pec_preco DECIMAL(18),
@@ -158,11 +163,6 @@ create table tb_fornecedor_peca (
 	fpe_est_id INT NOT NULL,
 	FOREIGN KEY (fpe_est_id) REFERENCES tb_estoque(est_id),
     FOREIGN KEY (fpe_for_id) REFERENCES tb_fornecedor(for_id)
-);
-
-create table tb_estoque (
-	est_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    est_quantidade INT NOT NULL
 );
 
 create table tb_email_fornecedor (
