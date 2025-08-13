@@ -99,6 +99,13 @@ create table tb_tipo_peca (
     tpe_nome VARCHAR(120)
 );
 
+create table tb_servico (
+	ser_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    ser_valor DECIMAL(18),
+    ser_tempo_execucao TIME,
+    ser_descricao VARCHAR(500)
+);
+
 create table tb_ordem_servico (
 	ods_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     ods_valor_total DECIMAL(18),
@@ -107,27 +114,15 @@ create table tb_ordem_servico (
     ods_observacoes VARCHAR(1000),
     ods_retrabalho BOOLEAN,
     ods_status BOOLEAN,
+	ods_ser_id INT NOT NULL,
     ods_vei_id INT NOT NULL,
     ods_cli_id INT NOT NULL,
     ods_mec_id INT NOT NULL,
     FOREIGN KEY (ods_mec_id) REFERENCES tb_mecanico(mec_id),
     FOREIGN KEY (ods_cli_id) REFERENCES tb_cliente(cli_id),
-    FOREIGN KEY (ods_vei_id) REFERENCES tb_veiculo(vei_id)
+    FOREIGN KEY (ods_vei_id) REFERENCES tb_veiculo(vei_id),
+	FOREIGN KEY (ods_ser_id) REFERENCES tb_servico(ser_id)
 );
-
-create table tb_servico (
-	ser_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    ser_valor DECIMAL(18),
-    ser_tempo_execucao TIME,
-    ser_descricao VARCHAR(500),
-    ser_ods_id INT NOT NULL,
-    FOREIGN KEY(ser_ods_id) REFERENCES tb_ordem_servico(ods_id)
-);
-
-create table tb_servico_peca (
-	sep_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    sep_ser_id INT NOT NULL
-);	
 
 create table tb_peca (
 	pec_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
@@ -135,11 +130,18 @@ create table tb_peca (
     pec_descricao VARCHAR(200),
     pec_tpe_id INT NOT NULL,
     pec_ods_id INT NOT NULL,
-	pec_sep_id INT NOT NULL,
-    FOREIGN KEY (pec_sep_id) REFERENCES tb_servico_peca(sep_id),
+	pec_est_id INT NOT NULL,
+	FOREIGN KEY (pec_est_id) REFERENCES tb_estoque(est_id),
     FOREIGN KEY (pec_ods_id) REFERENCES tb_ordem_servico(ods_id),
     FOREIGN KEY (pec_tpe_id) REFERENCES tb_tipo_peca(tpe_id)
 );
+
+create table tb_servico_peca (
+	sep_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    sep_ser_id INT NOT NULL,
+	sep_pec_id INT NOT NULL,
+	FOREIGN KEY (sep_pec_id) REFERENCES tb_peca(pec_id)
+);	
 
 --
 
@@ -153,23 +155,21 @@ create table tb_fornecedor (
 create table tb_fornecedor_peca (
 	fpe_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     fpe_for_id INT NOT NULL,
-    FOREIGN KEY(fpe_for_id) REFERENCES tb_fornecedor(for_id)
+	fpe_est_id INT NOT NULL,
+	FOREIGN KEY (fpe_est_id) REFERENCES tb_estoque(est_id),
+    FOREIGN KEY (fpe_for_id) REFERENCES tb_fornecedor(for_id)
 );
 
 create table tb_estoque (
 	est_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    est_quantidade INT NOT NULL,
-    est_pec_id INT NOT NULL,
-    est_fpe_id INT NOT NULL,
-    FOREIGN KEY(est_fpe_id) REFERENCES tb_fornecedor_peca(fpe_id),
-    FOREIGN KEY(est_pec_id) REFERENCES tb_peca(pec_id)
+    est_quantidade INT NOT NULL
 );
 
 create table tb_email_fornecedor (
 	emf_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     emf_email VARCHAR(200),
     emf_for_id INT,
-    FOREIGN KEY(emf_for_id) REFERENCES tb_fornecedor(for_id)
+    FOREIGN KEY (emf_for_id) REFERENCES tb_fornecedor(for_id)
 );
 
 create table tb_endereco_fornecedor (
