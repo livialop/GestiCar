@@ -1,23 +1,28 @@
 -- Peça mais utilizada
-select pec.pec_id, count(*) as total_usos
+select pec.pec_id, pec.pec_descricao, COUNT(sep.sep_pec_id) as vezes_utilizada
 from tb_peca pec
-group by pec.pec_id
-having total_usos > 1
-order by total_usos desc;
+join tb_servico_peca sep 
+on pec.pec_id = sep.sep_pec_id
+group by pec.pec_id, pec.pec_descricao
+order by vezes_utilizada desc
+limit 1;
 
 -- Cliente com maior gasto
 select cli.cli_nome, sum(ods.ods_valor_total) as total_gasto
 from tb_cliente cli
-inner join tb_ordem_servico ods on ods.ods_cli_id = cli.cli_id
+inner join tb_ordem_servico ods 
+on ods.ods_cli_id = cli.cli_id
 group by cli.cli_nome
-order by total_gasto desc;
+order by total_gasto desc
+limit 1;
 
 -- Serviço mais executado
 select ser.ser_id, ser.ser_descricao, count(*) as vezes_executado
 from tb_ordem_servico ods
 inner join tb_servico ser on ser.ser_id = ods.ods_ser_id
 group by ser.ser_id, ser.ser_descricao
-order by vezes_executado desc;
+order by vezes_executado desc
+limit 1;
 
 -- Tempo médio por ordem de serviço
 select sec_to_time(avg(time_to_sec(ser_tempo_execucao))) as media_tempo_execucao
